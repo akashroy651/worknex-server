@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 //  conect mongodb
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
+// midleware
 app.use(cors());
 app.use(express.json());
 
@@ -29,9 +30,18 @@ async function run() {
 
     app.get("/models", async (req, res) => {
       const result = await worknexcollection.find().toArray();
-
       res.send(result);
     });
+
+//  post method
+app.post('/models',async (req,res) => {
+    const data =req.body
+     const result = await worknexcollection.insertOne(data)
+    res.send({success: true,
+        result
+    })
+})
+
 
     await client.db("admin").command({ ping: 1 });
     console.log(
