@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
 //  conect mongodb
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // midleware
 app.use(cors());
@@ -28,20 +28,64 @@ async function run() {
     const db = client.db("worknex-db");
     const worknexcollection = db.collection("models");
 
+    // all ar jonono
     app.get("/models", async (req, res) => {
       const result = await worknexcollection.find().toArray();
       res.send(result);
     });
 
-//  post method
-app.post('/models',async (req,res) => {
-    const data =req.body
-     const result = await worknexcollection.insertOne(data)
-    res.send({success: true,
-        result
-    })
-})
+    // only akta datar view ar jonno
+    app.get("/models/:id", async (req, res) => {
+      const { id } = req.params;
 
+      //    const objectId -= new objectId(id)
+      // const result = await worknexcollection.findOne({_id: ObjectId})
+      // short cur use kore
+      const result = await worknexcollection.findOne({ _id: new ObjectId(id) });
+      res.send({ succes: true, result });
+    });
+
+    //  post method
+    app.post("/models", async (req, res) => {
+      const data = req.body;
+      const result = await worknexcollection.insertOne(data);
+      res.send({ success: true, result });
+    });
+
+    // update ar jonno PUT method use kore thaki
+    //  updateOne
+    // updateMany
+
+    app.put("/models/:id", async (req, res) => {
+      const { id } = req.params;
+      const data = req.body;
+      // console.log(data)
+      const objectId = new ObjectId(id);
+      const filter = { _id: objectId };
+      const update = {
+        $set: data,
+      };
+      const result = await worknexcollection.updateOne(filter, update);
+      res.send({ success: true, result });
+    });
+
+    // delete korar jonno
+    app.delete("/models/:id", async (req, res) => {
+      const { id } = req.params;
+      // const objectId = new ObjectId(id)
+      //const filter = {_id: objectId}
+      const result = await worknexcollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send({ success: true, result });
+    });
+
+    // latest home data
+    app.get("/modelscard", async (req, res) => {
+      const result = await worknexcollection.find().limit(9).toArray();
+      console.log(result);
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
