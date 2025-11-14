@@ -55,16 +55,13 @@ async function run() {
     // // my added jobs 
  app.get('/myadd', async (req, res) => {
     const email = req.query.email;
-    console.log("Client requested email:", email);
+   
 
     let query = {};
-
     if (email) {
         query = { userEmail: email }; // Only return logged user's jobs
     }
-
     const result = await worknexcollection.find(query).toArray();
-    console.log('result', result)
     res.send(result);
 });
 
