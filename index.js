@@ -74,14 +74,14 @@ async function run() {
     app.put("/models/:id", async (req, res) => {
       const { id } = req.params;
       const data = req.body;
-      // console.log(data)
+   
       const objectId = new ObjectId(id);
       const filter = { _id: objectId };
       const update = {
         $set: data,
       };
       const result = await worknexcollection.updateOne(filter, update);
-      res.send({ success: true, result });
+      res.send(result );
     });
 
     // delete korar jonno
