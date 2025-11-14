@@ -5,14 +5,19 @@ const port = process.env.PORT || 3000;
 //  conect mongodb
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
+//dotenv
+require("dotenv").config()
+
+
 // midleware
 app.use(cors());
 app.use(express.json());
 
 // db user: worknex_db
 // bd pass: hgH8UNSIXTr3zXYz
+
 const uri =
-  "mongodb+srv://worknex_db:hgH8UNSIXTr3zXYz@cluster0.d3mrlwo.mongodb.net/?appName=Cluster0";
+ `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.d3mrlwo.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -24,7 +29,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // deploy jonno of
+    // await client.connect();
     const db = client.db("worknex-db");
     const worknexcollection = db.collection("models");
 
@@ -42,7 +48,7 @@ async function run() {
       // const result = await worknexcollection.findOne({_id: ObjectId})
       // short cur use kore
       const result = await worknexcollection.findOne({ _id: new ObjectId(id) });
-      res.send(result);
+      res.send({  result });
     });
 
     //  post method
@@ -74,14 +80,15 @@ async function run() {
     app.put("/models/:id", async (req, res) => {
       const { id } = req.params;
       const data = req.body;
-   
+      // console.log(data)
       const objectId = new ObjectId(id);
       const filter = { _id: objectId };
       const update = {
         $set: data,
       };
       const result = await worknexcollection.updateOne(filter, update);
-      res.send(result );
+    //   res.send({  result });
+    res.send(result)
     });
 
     // delete korar jonno
@@ -92,17 +99,18 @@ async function run() {
       const result = await worknexcollection.deleteOne({
         _id: new ObjectId(id),
       });
-      res.send({ success: true, result });
+    //   res.send({  result });
+    res.send(result)
     });
 
     // latest home data
     app.get("/modelscard", async (req, res) => {
       const result = await worknexcollection.find().limit(9).toArray();
-      console.log(result);
+    //   console.log(result);
       res.send(result);
     });
-
-    await client.db("admin").command({ ping: 1 });
+            // deploy jonno off
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
