@@ -49,7 +49,7 @@ async function run() {
     app.post("/models", async (req, res) => {
       const data = req.body;
       const result = await worknexcollection.insertOne(data);
-      res.send({ success: true, result });
+      res.send(result);
     });
 
     // // my added jobs 
