@@ -42,7 +42,7 @@ async function run() {
       // const result = await worknexcollection.findOne({_id: ObjectId})
       // short cur use kore
       const result = await worknexcollection.findOne({ _id: new ObjectId(id) });
-      res.send({ succes: true, result });
+      res.send(result);
     });
 
     //  post method
